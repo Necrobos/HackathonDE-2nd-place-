@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: cnrprod1757002248-team-87862
+data:
+  DB_HOST: rc1b-gk21kywyncnoym7q.mdb.yandexcloud.net
+  DB_NAME: cnrprod1757002248-team-87862
+  DB_USERNAME: cnrprod1757002248-team-87862
+  YANDEX_FOLDER_ID: b1gnth6l6nca5vtfo99u

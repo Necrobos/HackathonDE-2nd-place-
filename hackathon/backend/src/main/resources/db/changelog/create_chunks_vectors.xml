@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd">
+
+    <changeSet id="1" author="Anna">
+        <sql>CREATE EXTENSION IF NOT EXISTS vector;</sql>
+    </changeSet>
+
+    <changeSet id="2" author="Anna">
+        <createTable tableName="chunks_vectors" schemaName="dm">
+            <column name="chunk_id" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="embedding" type="vector(256)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="chunks_vectors"
+                                 baseColumnNames="chunk_id"
+                                 constraintName="fk_chunks_vectors_chunk"
+                                 referencedTableName="chunks"
+                                 referencedColumnNames="id"
+                                 baseTableSchemaName="dm"
+                                 referencedTableSchemaName="dm"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

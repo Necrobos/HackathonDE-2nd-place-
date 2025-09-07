@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: study-mate
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:6432/${DB_NAME}?sslmode=verify-full&sslrootcert=src/main/resources/certs/root.crt
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+      default_schema: dm
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: false
+    change-log: classpath:db/changelog/changelog-master.xml
+
+app:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN}
+
+yandex:
+  api:
+    api-key: ${YANDEX_API_KEY}
+    folder-id: ${YANDEX_FOLDER_ID}
+
+logging:
+  level:
+    org.springframework: warn
+    com.neoflex: warn

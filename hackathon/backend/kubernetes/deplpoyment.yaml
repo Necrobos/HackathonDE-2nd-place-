@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: study-mate-backend
+  namespace: cnrprod1757002248-team-87862
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: study-mate-backend
+  template:
+    metadata:
+      labels:
+        app: study-mate-backend
+    spec:
+      containers:
+        - name: backend
+          image: study-mate-backend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: db.host
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: db.name
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: db.username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: telegram-bot-token
+            - name: YANDEX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: yandex-api-key
+            - name: YANDEX_FOLDER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: yandex.folder-id
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"

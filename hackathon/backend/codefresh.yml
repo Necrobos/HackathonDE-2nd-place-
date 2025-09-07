@@ -1,0 +1,41 @@
+version: '1.0'
+stages:
+  - prepare
+  - build
+  - deploy
+
+steps:
+  main_clone:
+    title: Cloning repository
+    stage: prepare
+    type: git-clone
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: '${{CF_BRANCH}}'
+
+  build_backend:
+    title: Build Backend with Maven
+    stage: build
+    image: maven:3.8.6-openjdk-21
+    working_directory: './backend'
+    commands:
+      - mvn clean package -DskipTests
+
+  build_docker_image:
+    title: Build Docker Image
+    stage: build
+    type: build
+    image_name: 'study-mate-backend'
+    working_directory: './backend'
+    tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+    dockerfile: Dockerfile
+
+  deploy_to_k8s:
+    title: Deploy to Kubernetes
+    stage: deploy
+    image: bitnami/kubectl:latest
+    working_directory: './backend'
+    commands:
+      - echo "$KUBECONFIG_DATA" | base64 -d > /tmp/kubeconfig
+      - export KUBECONFIG=/tmp/kubeconfig
+      - kubectl apply -f kubernetes/ --namespace=cnrprod1757002248-team-87862
+      - kubectl rollout status deployment/study-mate-backend --namespace=cnrprod1757002248-team-87862 --timeout=120s
